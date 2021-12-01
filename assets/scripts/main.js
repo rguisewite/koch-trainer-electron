@@ -119,27 +119,25 @@ class WebKochTrainer extends HTMLElement
 		this.element_header_img								= this.newElement( 'img',	{ 'src': '../icons/png/logo_small.png' },						this.element_header_title );
 		this.element_header_tabs							= this.newElement( 'span',	{ 'class': 'web-koch-trainer-header-tabs' },					this.element_header );
 		this.element_header_tab_random						= this.newElement( 'span',	{ 'class': 'web-koch-trainer-header-tab' },						this.element_header_tabs );
-		this.element_header_tab_file						= this.newElement( 'span',	{ 'class': 'web-koch-trainer-header-tab' },						this.element_header_tabs );
 		this.element_header_tab_callsign					= this.newElement( 'span',	{ 'class': 'web-koch-trainer-header-tab' },						this.element_header_tabs );
 		this.element_header_tab_word						= this.newElement( 'span',	{ 'class': 'web-koch-trainer-header-tab' },						this.element_header_tabs );
 
 		this.element_header_tab_random.textContent			= 'Random';
-		this.element_header_tab_file.textContent			= 'File';
 		this.element_header_tab_callsign.textContent		= 'Call Sign';
 		this.element_header_tab_word.textContent			= 'Word';
 
-		this.element_header_tab_random.addEventListener(	'click', function( event ) { self.set_mode( 'random' ); },		false );
-		this.element_header_tab_file.addEventListener(		'click', function( event ) { self.set_mode( 'file' ); },		false );
-		this.element_header_tab_callsign.addEventListener(	'click', function( event ) { self.set_mode( 'callsign' ); },	false );
-		this.element_header_tab_word.addEventListener(		'click', function( event ) { self.set_mode( 'word' ); },		false );
+		this.element_header_tab_random.addEventListener(	'click', function( event ) { self.mode = 'random'; },	false );
+		this.element_header_tab_callsign.addEventListener(	'click', function( event ) { self.mode = 'callsign'; },	false );
+		this.element_header_tab_word.addEventListener(		'click', function( event ) { self.mode = 'word'; },		false );
 	}
 
 	initialize_ui_content()
 	{
-		this.element_content = this.newElement( 'span', { 'class': 'web-koch-trainer-content' }, this.element_container );
+		this.element_content			= this.newElement( 'span', { 'class': 'web-koch-trainer-content' },						this.element_container );
+		this.element_content_settings	= this.newElement( 'span', { 'class': 'web-koch-trainer-content-settings-container' },	this.element_content );
+		this.element_content_view		= this.newElement( 'span', { 'class': 'web-koch-trainer-content-view' },				this.element_content );
 
 		this.initialize_ui_content_random();
-		this.initialize_ui_content_file();
 		this.initialize_ui_content_callsign();
 		this.initialize_ui_content_word();
 	}
@@ -149,56 +147,88 @@ class WebKochTrainer extends HTMLElement
 		const self = this;
 		let i, i_len;
 
-		this.element_content_random								= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-random' },									this.element_content );
-		this.element_content_random_source						= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-random-line' },							this.element_content_random );
-		this.element_content_random_source_prompt				= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-random-line-prompt' },						this.element_content_random_source );
-		this.element_content_random_source_value				= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-random-line-value' },						this.element_content_random_source );
-		this.element_content_random_level						= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-random-line' },							this.element_content_random_source_value );
-		this.element_content_random_level_radio					= this.newElement( 'input',	{ 'class': 'web-koch-trainer-content-random-line-radio', 'type': 'radio' },		this.element_content_random_level );
-		this.element_content_random_level_prompt				= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-random-line-prompt' },						this.element_content_random_level );
-		this.element_content_random_level_select				= this.newElement( 'select',{ 'class': 'web-koch-trainer-content-random-line-select' },						this.element_content_random_level );
-		this.element_content_random_custom_characters			= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-random-line' },							this.element_content_random_source_value );
-		this.element_content_random_custom_characters_radio		= this.newElement( 'input',	{ 'class': 'web-koch-trainer-content-random-line-prompt', 'type': 'radio' },	this.element_content_random_custom_characters );
-		this.element_content_random_custom_characters_prompt	= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-random-line-prompt' },						this.element_content_random_custom_characters );
-		this.element_content_random_custom_characters_input		= this.newElement( 'input',	{ 'class': 'web-koch-trainer-content-random-line-input', 'type': 'text' },		this.element_content_random_custom_characters );
-		this.element_content_random_character_count				= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-random-line' },							this.element_content_random );
-		this.element_content_random_character_count_prompt		= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-random-line-prompt' },						this.element_content_random_character_count );
-		this.element_content_random_character_count_input		= this.newElement( 'input',	{ 'class': 'web-koch-trainer-content-random-line-input', 'type': 'text' },		this.element_content_random_character_count );
-
-		this.element_content_random_level_radio.name						= 'RandomSource';
-		this.element_content_random_custom_characters_radio.name			= 'RandomSource';
-
-		this.element_content_random_level_radio.value						= 'level';
-		this.element_content_random_custom_characters_radio.value			= 'custom';
+		this.element_content_random								= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings random' },							this.element_content_settings );
+		this.element_content_random_source						= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line' },								this.element_content_random );
+		this.element_content_random_source_prompt				= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line-prompt' },						this.element_content_random_source );
+		this.element_content_random_source_select				= this.newElement( 'select',{ 'class': 'web-koch-trainer-content-settings-line-select' },						this.element_content_random_source );
+		this.element_content_random_level						= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line level' },						this.element_content_random );
+		this.element_content_random_level_prompt				= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line-prompt' },						this.element_content_random_level );
+		this.element_content_random_level_select				= this.newElement( 'select',{ 'class': 'web-koch-trainer-content-settings-line-select' },						this.element_content_random_level );
+		this.element_content_random_custom_characters			= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line custom' },						this.element_content_random );
+		this.element_content_random_custom_characters_prompt	= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line-prompt' },						this.element_content_random_custom_characters );
+		this.element_content_random_custom_characters_input		= this.newElement( 'input',	{ 'class': 'web-koch-trainer-content-settings-line-input', 'type': 'text' },		this.element_content_random_custom_characters );
+		this.element_content_random_character_count				= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line' },								this.element_content_random );
+		this.element_content_random_character_count_prompt		= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line-prompt' },						this.element_content_random_character_count );
+		this.element_content_random_character_count_input		= this.newElement( 'input',	{ 'class': 'web-koch-trainer-content-settings-line-input', 'type': 'text' },		this.element_content_random_character_count );
 
 		this.element_content_random_source_prompt.textContent				= 'Source';
 		this.element_content_random_character_count_prompt.textContent		= 'Character Count';
 		this.element_content_random_level_prompt.textContent				= 'Level';
 		this.element_content_random_custom_characters_prompt.textContent	= 'Custom Characters';
 
+		this.element_content_random_source_select.add( new Option( 'Level',				'level' ) );
+		this.element_content_random_source_select.add( new Option( 'Custom Characters',	'custom' ) );
+
 		for ( i = 0, i_len = 53; i < i_len; i++ )
 		{
 			this.element_content_random_level_select.add( new Option( i + 1, i + 1 ) );
 		}
 
-		this.element_content_random_level_select.addEventListener(				'change', function( event ) { if ( self.random_level !== self.element_content_random_level_select.value ) self.random_level = self.element_content_random_level_select.value; },		false );
-		this.element_content_random_level_radio.addEventListener(				'click', function( event ) { if ( self.random_source !== 'level' ) self.random_source = 'level'; },		false );
-		this.element_content_random_custom_characters_radio.addEventListener(	'click', function( event ) { if ( self.random_source !== 'custom' ) self.random_source = 'custom'; },	false );
-	}
-
-	initialize_ui_content_file()
-	{
-		this.element_content_file							= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-file' },					this.element_content );
+		this.element_content_random_source_select.addEventListener(				'change',	function( event ) { if ( self.random_source !== self.element_content_random_source_select.value ) self.random_source = self.element_content_random_source_select.value; },		false );
+		this.element_content_random_level_select.addEventListener(				'change',	function( event ) { if ( self.random_level !== self.element_content_random_level_select.value ) self.random_level = self.element_content_random_level_select.value; },		false );
+		this.element_content_random_custom_characters_input.addEventListener(	'change',	function( event ) { if ( self.random_custom_characters !== self.element_content_random_custom_characters_input.value ) self.random_custom_characters = self.element_content_random_custom_characters_input.value; },		false );
+		this.element_content_random_character_count_input.addEventListener(		'change',	function( event ) { if ( self.random_character_count !== self.element_content_random_character_count_input.value ) self.random_character_count = self.element_content_random_character_count_input.value; },		false );
 	}
 
 	initialize_ui_content_callsign()
 	{
-		this.element_content_callsign						= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-callsign' },				this.element_content );
+		const self = this;
+
+		this.element_content_callsign							= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings callsign' },							this.element_content_settings );
+		this.element_content_callsign_count						= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line' },								this.element_content_callsign );
+		this.element_content_callsign_count_prompt				= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line-prompt' },						this.element_content_callsign_count );
+		this.element_content_callsign_count_input				= this.newElement( 'input',	{ 'class': 'web-koch-trainer-content-settings-line-input', 'type': 'text' },		this.element_content_callsign_count );
+
+		this.element_content_callsign_count_prompt.textContent	= 'Callsign Count';
+
+		this.element_content_callsign_count_input.addEventListener( 'change', function( event ) { if ( self.callsign_count !== self.element_content_callsign_count_input.value ) self.callsign_count = self.element_content_callsign_count_input.value; },		false );
 	}
 
 	initialize_ui_content_word()
 	{
-		this.element_content_word							= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-word' },					this.element_content );
+		this.element_content_word								= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings word' },									this.element_content_settings );
+		this.element_content_word_count							= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line' },									this.element_content_word );
+		this.element_content_word_count_prompt					= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line-prompt' },							this.element_content_word_count );
+		this.element_content_word_count_input					= this.newElement( 'input',	{ 'class': 'web-koch-trainer-content-settings-line-input', 'type': 'text' },			this.element_content_word_count );
+		this.element_content_word_char_min						= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line' },									this.element_content_word );
+		this.element_content_word_char_min_prompt				= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line-prompt' },							this.element_content_word_char_min );
+		this.element_content_word_char_min_input				= this.newElement( 'input',	{ 'class': 'web-koch-trainer-content-settings-line-input', 'type': 'text' },			this.element_content_word_char_min );
+		this.element_content_word_char_max						= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line' },									this.element_content_word );
+		this.element_content_word_char_max_prompt				= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line-prompt' },							this.element_content_word_char_max );
+		this.element_content_word_char_max_input				= this.newElement( 'input',	{ 'class': 'web-koch-trainer-content-settings-line-input', 'type': 'text' },			this.element_content_word_char_max );
+		this.element_content_word_separator_comma				= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line' },									this.element_content_word );
+		this.element_content_word_separator_comma_checkbox		= this.newElement( 'input',	{ 'class': 'web-koch-trainer-content-settings-line-checkbox', 'type': 'checkbox' },		this.element_content_word_separator_comma );
+		this.element_content_word_separator_comma_prompt		= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line-prompt-checkbox' },					this.element_content_word_separator_comma );
+		this.element_content_word_separator_period				= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line' },									this.element_content_word );
+		this.element_content_word_separator_period_checkbox		= this.newElement( 'input',	{ 'class': 'web-koch-trainer-content-settings-line-checkbox', 'type': 'checkbox' },		this.element_content_word_separator_period );
+		this.element_content_word_separator_period_prompt		= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line-prompt-checkbox' },					this.element_content_word_separator_period );
+		this.element_content_word_separator_question			= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line' },									this.element_content_word );
+		this.element_content_word_separator_question_checkbox	= this.newElement( 'input',	{ 'class': 'web-koch-trainer-content-settings-line-checkbox', 'type': 'checkbox' },		this.element_content_word_separator_question );
+		this.element_content_word_separator_question_prompt		= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line-prompt-checkbox' },					this.element_content_word_separator_question );
+
+		this.element_content_word_count_prompt.textContent				= 'Word Count';
+		this.element_content_word_char_min_prompt.textContent			= 'Word Min Length';
+		this.element_content_word_char_max_prompt.textContent			= 'Word Max Length';
+		this.element_content_word_separator_comma_prompt.textContent	= 'Include Comma';
+		this.element_content_word_separator_period_prompt.textContent	= 'Include Period';
+		this.element_content_word_separator_question_prompt.textContent	= 'Include Question Mark';
+
+		this.element_content_word_count_input.addEventListener( 'change', function( event ) { if ( self.word_count !== self.element_content_word_count_input.value ) self.word_count = self.element_content_word_count_input.value; },		false );
+		this.element_content_word_char_min_input.addEventListener( 'change', function( event ) { if ( self.word_char_min !== self.element_content_word_char_min_input.value ) self.word_char_min = self.element_content_word_char_min_input.value; },		false );
+		this.element_content_word_char_max_input.addEventListener( 'change', function( event ) { if ( self.word_char_max !== self.element_content_word_char_max_input.value ) self.word_char_max = self.element_content_word_char_max_input.value; },		false );
+		this.element_content_word_separator_comma_checkbox.addEventListener( 'click', function( event ) { if ( self.word_comma !== self.element_content_word_separator_comma_checkbox.checked ) self.word_comma = self.element_content_word_separator_comma_checkbox.checked; },		false );
+		this.element_content_word_separator_period_checkbox.addEventListener( 'click', function( event ) { if ( self.word_period !== self.element_content_word_separator_period_checkbox.checked ) self.word_period = self.element_content_word_separator_period_checkbox.checked; },		false );
+		this.element_content_word_separator_question_checkbox.addEventListener( 'click', function( event ) { if ( self.word_question !== self.element_content_word_separator_question_checkbox.checked ) self.word_question = self.element_content_word_separator_question_checkbox.checked; },		false );
 	}
 
 	initialize_ui_actionbar()
@@ -262,8 +292,8 @@ class WebKochTrainer extends HTMLElement
 	{
 		this._mode = mode;
 
-		classNameRemoveIfPresent( this.element_content, [ 'random', 'file', 'callsign', 'word' ] );
-		classNameAddIfMissing( this.element_content, mode );
+		classNameRemoveIfPresent( this.element_content_settings, [ 'random', 'callsign', 'word' ] );
+		classNameAddIfMissing( this.element_content_settings, mode );
 	}
 
 	event_button_mousedown( e )
@@ -359,12 +389,6 @@ class WebKochTrainer extends HTMLElement
 
 	defaults()
 	{
-		this._file				= null;
-
-		this._callsign_mode		= false;
-		this._callsign_count	= 20;
-
-		this._word_mode			= false;
 		this._word_count		= 20;
 		this._word_char_min		= 1;
 		this._word_char_max		= 5;
@@ -378,33 +402,49 @@ class WebKochTrainer extends HTMLElement
 		// Generic
 		//
 
-		if ( !this.hasAttribute( 'mode' ) )						this.mode						= 'random';
-		if ( !this.hasAttribute( 'character-speed' ) )			this.character_speed			= 20;
-		if ( !this.hasAttribute( 'effective-speed' ) )			this.effective_speed			= 20;
-		if ( !this.hasAttribute( 'hertz' ) )					this.hertz						= 550;
+		if ( !this.hasAttribute( 'mode' ) )						this.mode						= this.storage_value_or_default( 'mode',			'random' );
+		if ( !this.hasAttribute( 'character-speed' ) )			this.character_speed			= this.storage_value_or_default( 'character-speed',	20 );
+		if ( !this.hasAttribute( 'effective-speed' ) )			this.effective_speed			= this.storage_value_or_default( 'effective-speed',	20 );
+		if ( !this.hasAttribute( 'hertz' ) )					this.hertz						= this.storage_value_or_default( 'hertz',			550 );
 
 		//
 		// Random Mode
 		//
 
-		if ( !this.hasAttribute( 'random-source' ) )			this.random_source				= 'level';
-		if ( !this.hasAttribute( 'random-character-count' ) )	this.random_character_count		= 100;
-		if ( !this.hasAttribute( 'random-level' ) )				this.random_level				= 53;
-		if ( !this.hasAttribute( 'random-custom-characters' ) )	this.random_custom_characters	= '';
+		if ( !this.hasAttribute( 'random-source' ) )			this.random_source				= this.storage_value_or_default( 'random-source',				'level' );
+		if ( !this.hasAttribute( 'random-character-count' ) )	this.random_character_count		= this.storage_value_or_default( 'random-character-count',		100 );
+		if ( !this.hasAttribute( 'random-level' ) )				this.random_level				= this.storage_value_or_default( 'random-level',				53 );
+		if ( !this.hasAttribute( 'random-custom-characters' ) )	this.random_custom_characters	= this.storage_value_or_default( 'random-custom-characters',	'' );
 
 		//
 		// Word Mode
 		//
 
+		if ( !this.hasAttribute( 'word-count' ) )				this.word_count					= this.storage_value_or_default( 'word-count',		20 );
+		if ( !this.hasAttribute( 'word-char-min' ) )			this.word_char_min				= this.storage_value_or_default( 'word-char-min',	2 );
+		if ( !this.hasAttribute( 'word-char-max' ) )			this.word_char_max				= this.storage_value_or_default( 'word-char-max',	5 );
+		if ( !this.hasAttribute( 'word-comma' ) )				this.word_comma					= this.storage_value_or_default( 'word-comma',		false );
+		if ( !this.hasAttribute( 'word-period' ) )				this.word_period				= this.storage_value_or_default( 'word-period',		false );
+		if ( !this.hasAttribute( 'word-question' ) )			this.word_question				= this.storage_value_or_default( 'word-question',	false );
+		if ( !this.hasAttribute( 'word-file' ) )				this.word_file					= this.storage_value_or_default( 'word-file',		'' ); // TODO: Maybe this should be a "textarea" to paste content into?
+
 		//
 		// Callsign Mode
 		//
 
-		//
-		// File Mode
-		//
+		if ( !this.hasAttribute( 'callsign-count' ) )			this.callsign_count				= this.storage_value_or_default( 'callsign-count',	20 );
+	}
 
-		if ( !this.hasAttribute( 'file' ) )						this.file						= '';
+	storage_value_or_default( key, default_value )
+	{
+		let value;
+
+		if ( ( value = localStorage.getItem( key ) ) === null )
+		{
+			return default_value;
+		}
+
+		return value;
 	}
 
 	update_timing()
@@ -439,9 +479,6 @@ class WebKochTrainer extends HTMLElement
 	get random_custom_characters()			{ return this.getAttribute( 'random-custom-characters' ); }
 	set random_custom_characters( value )	{ this.setAttribute( 'random-custom-characters', value ); }
 
-	get file()						{ return this.getAttribute( 'file' ); }
-	set file( value )				{ this.setAttribute( 'file', value ); }
-
 	get hertz()						{ return this.getAttribute( 'hertz' ); }
 	set hertz( value )				{ this.setAttribute( 'hertz', value ); }
 
@@ -466,8 +503,14 @@ class WebKochTrainer extends HTMLElement
 	get word_file()					{ return this.getAttribute( 'word-file' ); }
 	set word_file( value )			{ this.setAttribute( 'word-file', value ); }
 
-	get word_separators()			{ return this.getAttribute( 'word-separators' ); }
-	set word_separators( value )	{ this.setAttribute( 'word-separators', value ); }
+	get word_comma()				{ return this.getAttribute( 'word-comma' ); }
+	set word_comma( value )			{ this.setAttribute( 'word-comma', value ); }
+
+	get word_period()				{ return this.getAttribute( 'word-period' ); }
+	set word_period( value )		{ this.setAttribute( 'word-period', value ); }
+
+	get word_question()				{ return this.getAttribute( 'word-question' ); }
+	set word_question( value )		{ this.setAttribute( 'word-question', value ); }
 
 	//
 	// Attributes
@@ -475,11 +518,13 @@ class WebKochTrainer extends HTMLElement
 
 	static get observedAttributes()
 	{
-		return [ 'mode', 'character-speed', 'effective-speed', 'hertz', 'random-source', 'random-level', 'random-character-count', 'random-custom-characters', 'file', 'callsign-mode', 'callsign-count', 'word-mode', 'word-count', 'word-char-min', 'word-char-max', 'word-file', 'word-separators' ];
+		return [ 'mode', 'character-speed', 'effective-speed', 'hertz', 'random-source', 'random-level', 'random-character-count', 'random-custom-characters', 'callsign-mode', 'callsign-count', 'word-mode', 'word-count', 'word-char-min', 'word-char-max', 'word-file', 'word-comma', 'word-period', 'word-question' ];
 	}
 
 	attributeChangedCallback( name, oldValue, newValue )
 	{
+		localStorage.setItem( name, newValue );
+
 		switch ( name )
 		{
 			case 'mode':
@@ -509,10 +554,12 @@ class WebKochTrainer extends HTMLElement
 
 				break;
 			case 'random-source':
-				this._random_source = newValue;
+				this._random_source								= newValue;
+				this.element_content_random_source_select.value	= newValue;
 
-				if ( newValue === 'level' )	this.element_content_random_level_radio.checked = true;
-				else						this.element_content_random_custom_characters_radio.checked = true;
+				classNameRemoveIfPresent( this.element_content_random, 'level' );
+				classNameRemoveIfPresent( this.element_content_random, 'custom' );
+				classNameAddIfMissing( this.element_content_random, newValue );
 
 				break;
 			case 'random-level':
@@ -532,23 +579,34 @@ class WebKochTrainer extends HTMLElement
 				this.element_content_random_custom_characters_input.value	= newValue;
 
 				break;
-			case 'file':
-				break;
 			case 'callsign-mode':
 				break;
 			case 'callsign-count':
+				this._callsign_count							= newValue;
+				this.element_content_callsign_count_input.value	= newValue;
+
 				break;
 			case 'word-mode':
 				break;
 			case 'word-count':
+				this.element_content_word_count_input.value = newValue;
 				break;
 			case 'word-char-min':
+				this.element_content_word_char_min_input.value = newValue;
 				break;
 			case 'word-char-max':
+				this.element_content_word_char_max_input.value = newValue;
 				break;
 			case 'word-file':
 				break;
-			case 'word-separators':
+			case 'word-comma':
+				this.element_content_word_separator_comma_checkbox.checked = newValue;
+				break;
+			case 'word-period':
+				this.element_content_word_separator_period_checkbox.checked = newValue;
+				break;
+			case 'word-question':
+				this.element_content_word_separator_question_checkbox.checked = newValue;
 				break;
 		}
 	}

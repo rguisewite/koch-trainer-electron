@@ -67,51 +67,72 @@
 .web-koch-trainer-content
 {
 	position: relative;
+	display: flex;
+	flex-grow: 1;
+}
+
+.web-koch-trainer-content-settings-container
+{
+	position: relative;
 	display: block;
+	padding: 30px;
+	width: 200px;
+	flex-shrink: 0;
+	border-right: 4px solid #f8f8f8;
+}
+
+.web-koch-trainer-content-view
+{
+	position: relative;
+	display: flex;
 	padding: 30px;
 	flex-grow: 1;
 }
 
-.web-koch-trainer-content-random,
-.web-koch-trainer-content-file,
-.web-koch-trainer-content-callsign,
-.web-koch-trainer-content-word
+.web-koch-trainer-content-settings
 {
 	position: relative;
 	display: none;
 }
 
-.web-koch-trainer-content.random .web-koch-trainer-content-random,
-.web-koch-trainer-content.file .web-koch-trainer-content-file,
-.web-koch-trainer-content.callsign .web-koch-trainer-content-callsign,
-.web-koch-trainer-content.word .web-koch-trainer-content-word
+.web-koch-trainer-content-settings-container.random .web-koch-trainer-content-settings.random,
+.web-koch-trainer-content-settings-container.file .web-koch-trainer-content-settings.file,
+.web-koch-trainer-content-settings-container.callsign .web-koch-trainer-content-settings.callsign,
+.web-koch-trainer-content-settings-container.word .web-koch-trainer-content-settings.word
 {
 	display: block;
 }
 
-.web-koch-trainer-content-random-line
+.web-koch-trainer-content-settings-line,
+.web-koch-trainer-content-settings.custom .web-koch-trainer-content-settings-line.custom,
+.web-koch-trainer-content-settings.level .web-koch-trainer-content-settings-line.level
 {
 	position: relative;
-	display: flex;
-	align-items: flex-start;
-	flex-wrap: wrap;
-	flex-grow: 1;
-	flex-basis: 100%;
+	display: block;
 }
 
-.web-koch-trainer-content-random > .web-koch-trainer-content-random-line + .web-koch-trainer-content-random-line
+.web-koch-trainer-content-settings-line.level,
+.web-koch-trainer-content-settings-line.custom
+{
+	display: none;
+}
+
+.web-koch-trainer-content-settings > .web-koch-trainer-content-settings-line + .web-koch-trainer-content-settings-line
 {
 	margin-top: 10px;
 }
 
-.web-koch-trainer-content-random-line-prompt
+.web-koch-trainer-content-settings-line-prompt
 {
 	position: relative;
-	display: inline-block;
-	margin-right: 8px;
+	display: block;
+	margin-bottom: 5px;
+	text-transform: uppercase;
+	font-weight: bold;
+	font-size: 10px;
 }
 
-.web-koch-trainer-content-random-line-value
+.web-koch-trainer-content-settings-line-value
 {
 	position: relative;
 	display: flex;
@@ -122,28 +143,45 @@
 	flex-basis: 100%;
 }
 
-.web-koch-trainer-content-random-line-radio
+.web-koch-trainer-content-settings-line-select
 {
-
+	width: 100%;
+	padding: 6px 10px;
+	outline: none;
+	border: 1px solid #dae0de;
+	border-radius: 4px;
+	box-sizing: border-box;
 }
 
-.web-koch-trainer-content-random-line-input
+.web-koch-trainer-content-settings-line-select:focus
 {
-
+	border-color: #00a46f;
 }
 
+.web-koch-trainer-content-settings-line-input
+{
+	width: 100%;
+	padding: 6px 10px;
+	outline: none;
+	border: 1px solid #dae0de;
+	border-radius: 4px;
+	box-sizing: border-box;
+}
 
-
-
+.web-koch-trainer-content-settings-line-input:focus
+{
+	border-color: #00a46f;
+}
 
 .web-koch-trainer-actionbar
 {
 	position: relative;
 	display: flex;
-	padding: 10px 25px 30px;
+	padding: 20px 25px 30px;
 	flex-shrink: 0;
 	height: 44px;
 	justify-content: flex-end;
+	background-color: #f8f8f8;
 }
 
 .web-koch-trainer-actionbar-char-speed,
