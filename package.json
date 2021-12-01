@@ -1,0 +1,67 @@
+{
+  "name": "koch-trainer-electron",
+  "version": "1.0.0",
+  "productName": "Koch Trainer",
+  "description": "Koch Trainer",
+  "main": "app.js",
+  "scripts": {
+    "start": "ELECTRON_DEVELOPMENT_MODE=1 electron .",
+    "build-mac": "npm install && ./node_modules/.bin/electron-rebuild",
+    "build-win": "npm install && .\\node_modules\\.bin\\electron-rebuild.cmd",
+    "pack-mac": "npm run build-mac && electron-builder --dir -m",
+    "pack-win": "npm run build-win && electron-builder --dir -w --x64 --ia32",
+    "make-mac": "npm run build-mac && electron-builder -m",
+    "make-win": "npm run build-win && electron-builder -w --x64 --ia32",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "author": "Ryan Guisewite",
+  "dependencies": {
+    "@electron/remote": "^2.0.1",
+    "electron-store": "^8.0.1",
+    "node-abi": "^3.5.0"
+  },
+  "devDependencies": {
+    "electron": "^16.0.0",
+    "electron-builder": "^22.14.5",
+    "electron-rebuild": "^3.2.5"
+  },
+  "build": {
+    "appId": "com.rguisewite.koch-trainer-electron",
+    "productName": "Koch Trainer",
+    "copyright": "Copyright Ryan Guisewite All rights reserved.",
+    "files": [
+      "**/*",
+      "!**/assets/icons/illustrator"
+    ],
+    "mac": {
+      "category": "public.app-category.utilities",
+      "target": "pkg",
+      "icon": "assets/icons/mac/icon.icns",
+      "type": "distribution",
+      "minimumSystemVersion": "10.12.0"
+    },
+    "pkg": {
+      "license": "build/license_en.txt",
+      "welcome": "build/mac/welcome.rtf",
+      "isRelocatable": false,
+      "isVersionChecked": true
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "build/win/icon.ico",
+      "signingHashAlgorithms": [
+        "sha256"
+      ]
+    },
+    "nsis": {
+      "installerIcon": "build/win/icon.ico",
+      "uninstallerIcon": "build/win/icon.ico",
+      "license": "build/license_en.txt",
+      "artifactName": "${productName} Setup ${version}.${ext}",
+      "deleteAppDataOnUninstall": true,
+      "runAfterFinish": true,
+      "createDesktopShortcut": false,
+      "createStartMenuShortcut": true
+    }
+  }
+}

@@ -1,0 +1,245 @@
+.web-koch-trainer-container
+{
+	position: absolute;
+	display: flex;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	flex-direction: column;
+}
+
+.web-koch-trainer-header
+{
+	position: relative;
+	display: flex;
+	flex-shrink: 0;
+	flex-direction: column;
+	box-shadow: 0 2px 10px rgba( 0, 0, 0, 0.1 );
+}
+
+.web-koch-trainer-header-title
+{
+	position: relative;
+	display: flex;
+	padding: 30px 0 10px;
+	align-items: center;
+	justify-content: center;
+	flex-basis: 100%;
+}
+
+.web-koch-trainer-header-tabs
+{
+	position: relative;
+	display: flex;
+	padding: 5px 0;
+	align-items: center;
+	justify-content: center;
+	font-size: 18px;
+	font-weight: normal;
+	color: #000;
+	flex-basis: 100%;
+	background: #00a46f;
+}
+
+.web-koch-trainer-header-tab
+{
+	position: relative;
+	display: inline-flex;
+	margin: 0 10px;
+	padding: 10px 15px;
+	color: #fff;
+	cursor: pointer;
+	border-radius: 4px;
+	transition: background-color 0.15s linear;
+}
+
+.web-koch-trainer-header-tab:hover
+{
+	background-color: rgba( 255, 255, 255, 0.25 );
+}
+
+.web-koch-trainer-header-tab:first-child
+{
+	border-left: none;
+}
+
+.web-koch-trainer-content
+{
+	position: relative;
+	display: block;
+	padding: 30px;
+	flex-grow: 1;
+}
+
+.web-koch-trainer-content-random,
+.web-koch-trainer-content-file,
+.web-koch-trainer-content-callsign,
+.web-koch-trainer-content-word
+{
+	position: relative;
+	display: none;
+}
+
+.web-koch-trainer-content.random .web-koch-trainer-content-random,
+.web-koch-trainer-content.file .web-koch-trainer-content-file,
+.web-koch-trainer-content.callsign .web-koch-trainer-content-callsign,
+.web-koch-trainer-content.word .web-koch-trainer-content-word
+{
+	display: block;
+}
+
+.web-koch-trainer-content-random-line
+{
+	position: relative;
+	display: flex;
+	align-items: flex-start;
+	flex-wrap: wrap;
+	flex-grow: 1;
+	flex-basis: 100%;
+}
+
+.web-koch-trainer-content-random > .web-koch-trainer-content-random-line + .web-koch-trainer-content-random-line
+{
+	margin-top: 10px;
+}
+
+.web-koch-trainer-content-random-line-prompt
+{
+	position: relative;
+	display: inline-block;
+	margin-right: 8px;
+}
+
+.web-koch-trainer-content-random-line-value
+{
+	position: relative;
+	display: flex;
+	padding-left: 25px;
+	align-items: center;
+	flex-wrap: wrap;
+	flex-grow: 1;
+	flex-basis: 100%;
+}
+
+.web-koch-trainer-content-random-line-radio
+{
+
+}
+
+.web-koch-trainer-content-random-line-input
+{
+
+}
+
+
+
+
+
+.web-koch-trainer-actionbar
+{
+	position: relative;
+	display: flex;
+	padding: 10px 25px 30px;
+	flex-shrink: 0;
+	height: 44px;
+	justify-content: flex-end;
+}
+
+.web-koch-trainer-actionbar-char-speed,
+.web-koch-trainer-actionbar-eff-speed,
+.web-koch-trainer-actionbar-hertz
+{
+	position: relative;
+	display: inline-flex;
+	margin-right: 25px;
+	align-items: center;
+	flex-shrink: 0;
+}
+
+.web-koch-trainer-actionbar-char-speed-text,
+.web-koch-trainer-actionbar-eff-speed-text,
+.web-koch-trainer-actionbar-hertz-text
+{
+	position: relative;
+	display: inline-block;
+	margin-right: 8px;
+}
+
+.web-koch-trainer-actionbar-char-speed-input,
+.web-koch-trainer-actionbar-eff-speed-input,
+.web-koch-trainer-actionbar-hertz-input
+{
+	width: 50px;
+	padding: 6px 15px;
+	text-align: center;
+	outline: none;
+	border: 1px solid #dae0de;
+	border-radius: 4px;
+	box-sizing: border-box;
+}
+
+.web-koch-trainer-actionbar-hertz-input
+{
+	width: 70px;
+}
+
+.web-koch-trainer-actionbar-char-speed-input:focus,
+.web-koch-trainer-actionbar-eff-speed-input:focus,
+.web-koch-trainer-actionbar-hertz-input:focus
+{
+	border-color: #00a46f;
+}
+
+.web-koch-trainer-actionbar-spacer
+{
+	position: relative;
+	display: inline-flex;
+	margin-right: 10px;
+	align-items: center;
+	flex-grow: 1;
+}
+
+.web-koch-trainer-actionbar-button
+{
+	position: relative;
+	display: inline-flex;
+	vertical-align: middle;
+	padding: 0 25px;
+	height: 44px;
+	text-align: center;
+	line-height: 1;
+	background: #00a46f;
+	border: 1px solid #00a46f;
+	color: #fff;
+	font-size: 16px;
+	border-radius: 4px;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	box-shadow: none;
+	cursor: pointer;
+	outline: none;
+	transition: background-color 0.2s linear, border-color 0.2s linear, box-shadow 0.2s linear;
+	box-sizing: border-box;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.web-koch-trainer-actionbar-button:hover
+{
+	background: #00885c;
+	border: 1px solid #00885c;
+	color: #fff;
+}
+
+.web-koch-trainer-actionbar-button:active
+{
+	background: #007952;
+	border: 1px solid #007952;
+	color: #fff;
+}

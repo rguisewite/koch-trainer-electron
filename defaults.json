@@ -1,0 +1,34 @@
+{
+	"about_window_options":
+	{
+		"width":			500,
+		"height":			300,
+		"resizable":		false,
+		"center":			true,
+		"frame":			true,
+		"show":				false,
+		"titleBarStyle":	"hidden",
+		"webPreferences":
+		{
+			"nativeWindowOpen": true,
+			"nodeIntegration": true,
+			"contextIsolation": false
+		}
+	},
+	"settings_window_options":
+	{
+		"width":			1024,
+		"height":			768,
+		"minWidth":			1024,
+		"minHeight":		768,
+		"center":			true,
+		"frame":			false,
+		"show":				false,
+		"webPreferences":
+		{
+			"nativeWindowOpen": true,
+			"nodeIntegration": true,
+			"contextIsolation": false
+		}
+	}
+}

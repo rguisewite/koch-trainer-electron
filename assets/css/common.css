@@ -1,0 +1,26 @@
+html
+{
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+}
+
+body
+{
+	position: relative;
+	min-width: 100%;
+	min-height: 100%;
+	height: 100%;
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	color: #494a53;
+	font-size: 12px;
+	font-family: 'Poppins', sans-serif;
+	letter-spacing: 0.02em;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	background: transparent;
+}

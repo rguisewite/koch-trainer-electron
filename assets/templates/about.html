@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Koch Trainer: About</title>
+
+		<link rel="stylesheet" type="text/css" href="../css/fonts.css" />
+		<link rel="stylesheet" type="text/css" href="../css/common.css">
+		<link rel="stylesheet" type="text/css" href="../css/about.css" />
+
+		<script type="text/javascript">
+			var appVersion = require( '@electron/remote' ).app.getVersion();
+		</script>
+	</head>
+
+	<body>
+		<span class="titlebar">
+			<span class="titlebar_button_container"></span>
+		</span>
+
+		<span class="container">
+			<span class="content">
+				<span class="logo">
+					<img src="../icons/png/logo_small.png" />
+				</span>
+
+				<span class="version_title">
+					<span class="version_text">Version</span>
+					<span id="version" class="version"></span>
+
+					<script type="text/javascript">document.getElementById( 'version' ).textContent = appVersion;</script>
+				</span>
+			</span>
+		</span>
+	</body>
+</html>
