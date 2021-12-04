@@ -34,6 +34,7 @@ function Main_CreateWindow()
 
 	Object.assign( opts, default_opts.main_window_options );
 	Object.assign( opts, store.get( 'main_window_options' ) );
+	Object.assign( opts.webPreferences, { preload: path.join( app.getAppPath(), 'assets/scripts/preload.js' ) } );
 
 	global.main_window = new BrowserWindow( opts );
 	global.main_window.loadFile( 'assets/templates/main.html' );

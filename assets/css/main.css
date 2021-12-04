@@ -22,7 +22,7 @@
 {
 	position: relative;
 	display: flex;
-	padding: 30px 0 10px;
+	padding: 30px 0 20px;
 	align-items: center;
 	justify-content: center;
 	flex-basis: 100%;
@@ -69,6 +69,28 @@
 	position: relative;
 	display: flex;
 	flex-grow: 1;
+	overflow: hidden;
+}
+
+.web-koch-trainer-content-running
+{
+	position: absolute;
+	display: none;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	color: #bbc9c5;
+	font-size: 24px;
+	background-color: rgba( 255, 255, 255, 1 );
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+}
+
+.web-koch-trainer-content-running.visible
+{
+	display: flex;
 }
 
 .web-koch-trainer-content-settings-container
@@ -79,14 +101,34 @@
 	width: 200px;
 	flex-shrink: 0;
 	border-right: 4px solid #f8f8f8;
+	overflow: auto;
+}
+
+.web-koch-trainer-content-settings-title
+{
+	position: relative;
+	display: block;
+	margin-bottom: 20px;
+	color: #bbc9c5;
+	font-size: 24px;
 }
 
 .web-koch-trainer-content-view
 {
 	position: relative;
-	display: flex;
+	display: block;
 	padding: 30px;
 	flex-grow: 1;
+	overflow: auto;
+}
+
+.web-koch-trainer-content-view-title
+{
+	position: relative;
+	display: block;
+	margin-bottom: 20px;
+	color: #bbc9c5;
+	font-size: 24px;
 }
 
 .web-koch-trainer-content-settings
@@ -103,9 +145,7 @@
 	display: block;
 }
 
-.web-koch-trainer-content-settings-line,
-.web-koch-trainer-content-settings.custom .web-koch-trainer-content-settings-line.custom,
-.web-koch-trainer-content-settings.level .web-koch-trainer-content-settings-line.level
+.web-koch-trainer-content-settings-line
 {
 	position: relative;
 	display: block;
@@ -115,6 +155,12 @@
 .web-koch-trainer-content-settings-line.custom
 {
 	display: none;
+}
+
+.web-koch-trainer-content-settings.custom .web-koch-trainer-content-settings-line.custom,
+.web-koch-trainer-content-settings.level .web-koch-trainer-content-settings-line.level
+{
+	display: block;
 }
 
 .web-koch-trainer-content-settings > .web-koch-trainer-content-settings-line + .web-koch-trainer-content-settings-line
@@ -169,6 +215,23 @@
 }
 
 .web-koch-trainer-content-settings-line-input:focus
+{
+	border-color: #00a46f;
+}
+
+.web-koch-trainer-content-settings-line-textarea
+{
+	width: 100%;
+	height: 200px;
+	padding: 6px 10px;
+	outline: none;
+	border: 1px solid #dae0de;
+	border-radius: 4px;
+	resize: vertical;
+	box-sizing: border-box;
+}
+
+.web-koch-trainer-content-settings-line-textarea:focus
 {
 	border-color: #00a46f;
 }

@@ -15,19 +15,18 @@
 			"contextIsolation": false
 		}
 	},
-	"settings_window_options":
+	"main_window_options":
 	{
 		"width":			1024,
 		"height":			768,
 		"minWidth":			1024,
 		"minHeight":		768,
 		"center":			true,
-		"frame":			false,
+		"frame":			true,
 		"show":				false,
 		"webPreferences":
 		{
 			"nativeWindowOpen": true,
-			"nodeIntegration": true,
 			"contextIsolation": false
 		}
 	}

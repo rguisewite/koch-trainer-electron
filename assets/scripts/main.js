@@ -5,15 +5,7 @@ class WebKochTrainer extends HTMLElement
 		super();
 		const self = this;
 
-		this._context						= new AudioContext();
-		this._oscillator					= this._context.createOscillator();
-		this._oscillator.type				= "sine";
-		this._gain							= this._context.createGain();
-		this._gain.gain.value				= 0;
-
-		this._oscillator.connect( this._gain );
-		this._gain.connect( this._context.destination );
-		this._oscillator.start( 0 );
+		this._running	= false;
 
 		this.initialize_letters();
 
@@ -133,9 +125,17 @@ class WebKochTrainer extends HTMLElement
 
 	initialize_ui_content()
 	{
-		this.element_content			= this.newElement( 'span', { 'class': 'web-koch-trainer-content' },						this.element_container );
-		this.element_content_settings	= this.newElement( 'span', { 'class': 'web-koch-trainer-content-settings-container' },	this.element_content );
-		this.element_content_view		= this.newElement( 'span', { 'class': 'web-koch-trainer-content-view' },				this.element_content );
+		this.element_content							= this.newElement( 'span', { 'class': 'web-koch-trainer-content' },						this.element_container );
+		this.element_content_settings					= this.newElement( 'span', { 'class': 'web-koch-trainer-content-settings-container' },	this.element_content );
+		this.element_content_settings_title				= this.newElement( 'span', { 'class': 'web-koch-trainer-content-settings-title' },		this.element_content_settings );
+		this.element_content_view						= this.newElement( 'span', { 'class': 'web-koch-trainer-content-view' },				this.element_content );
+		this.element_content_view_title					= this.newElement( 'span', { 'class': 'web-koch-trainer-content-view-title' },			this.element_content_view );
+		this.element_content_view_content				= this.newElement( 'span', { 'class': 'web-koch-trainer-content-view-content' },		this.element_content_view );
+		this.element_content_running					= this.newElement( 'span', { 'class': 'web-koch-trainer-content-running' },				this.element_content );
+
+		this.element_content_settings_title.textContent	= 'Settings';
+		this.element_content_view_title.textContent		= 'Output';
+		this.element_content_running.textContent		= 'Running...';
 
 		this.initialize_ui_content_random();
 		this.initialize_ui_content_callsign();
@@ -196,25 +196,33 @@ class WebKochTrainer extends HTMLElement
 
 	initialize_ui_content_word()
 	{
-		this.element_content_word								= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings word' },									this.element_content_settings );
-		this.element_content_word_count							= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line' },									this.element_content_word );
-		this.element_content_word_count_prompt					= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line-prompt' },							this.element_content_word_count );
-		this.element_content_word_count_input					= this.newElement( 'input',	{ 'class': 'web-koch-trainer-content-settings-line-input', 'type': 'text' },			this.element_content_word_count );
-		this.element_content_word_char_min						= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line' },									this.element_content_word );
-		this.element_content_word_char_min_prompt				= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line-prompt' },							this.element_content_word_char_min );
-		this.element_content_word_char_min_input				= this.newElement( 'input',	{ 'class': 'web-koch-trainer-content-settings-line-input', 'type': 'text' },			this.element_content_word_char_min );
-		this.element_content_word_char_max						= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line' },									this.element_content_word );
-		this.element_content_word_char_max_prompt				= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line-prompt' },							this.element_content_word_char_max );
-		this.element_content_word_char_max_input				= this.newElement( 'input',	{ 'class': 'web-koch-trainer-content-settings-line-input', 'type': 'text' },			this.element_content_word_char_max );
-		this.element_content_word_separator_comma				= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line' },									this.element_content_word );
-		this.element_content_word_separator_comma_checkbox		= this.newElement( 'input',	{ 'class': 'web-koch-trainer-content-settings-line-checkbox', 'type': 'checkbox' },		this.element_content_word_separator_comma );
-		this.element_content_word_separator_comma_prompt		= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line-prompt-checkbox' },					this.element_content_word_separator_comma );
-		this.element_content_word_separator_period				= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line' },									this.element_content_word );
-		this.element_content_word_separator_period_checkbox		= this.newElement( 'input',	{ 'class': 'web-koch-trainer-content-settings-line-checkbox', 'type': 'checkbox' },		this.element_content_word_separator_period );
-		this.element_content_word_separator_period_prompt		= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line-prompt-checkbox' },					this.element_content_word_separator_period );
-		this.element_content_word_separator_question			= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line' },									this.element_content_word );
-		this.element_content_word_separator_question_checkbox	= this.newElement( 'input',	{ 'class': 'web-koch-trainer-content-settings-line-checkbox', 'type': 'checkbox' },		this.element_content_word_separator_question );
-		this.element_content_word_separator_question_prompt		= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line-prompt-checkbox' },					this.element_content_word_separator_question );
+		const self = this;
+
+		this.element_content_word										= this.newElement( 'span',		{ 'class': 'web-koch-trainer-content-settings word' },									this.element_content_settings );
+		this.element_content_word_count									= this.newElement( 'span',		{ 'class': 'web-koch-trainer-content-settings-line' },									this.element_content_word );
+		this.element_content_word_count_prompt							= this.newElement( 'span',		{ 'class': 'web-koch-trainer-content-settings-line-prompt' },							this.element_content_word_count );
+		this.element_content_word_count_input							= this.newElement( 'input',		{ 'class': 'web-koch-trainer-content-settings-line-input', 'type': 'text' },			this.element_content_word_count );
+		this.element_content_word_char_min								= this.newElement( 'span',		{ 'class': 'web-koch-trainer-content-settings-line' },									this.element_content_word );
+		this.element_content_word_char_min_prompt						= this.newElement( 'span',		{ 'class': 'web-koch-trainer-content-settings-line-prompt' },							this.element_content_word_char_min );
+		this.element_content_word_char_min_input						= this.newElement( 'input',		{ 'class': 'web-koch-trainer-content-settings-line-input', 'type': 'text' },			this.element_content_word_char_min );
+		this.element_content_word_char_max								= this.newElement( 'span',		{ 'class': 'web-koch-trainer-content-settings-line' },									this.element_content_word );
+		this.element_content_word_char_max_prompt						= this.newElement( 'span',		{ 'class': 'web-koch-trainer-content-settings-line-prompt' },							this.element_content_word_char_max );
+		this.element_content_word_char_max_input						= this.newElement( 'input',		{ 'class': 'web-koch-trainer-content-settings-line-input', 'type': 'text' },			this.element_content_word_char_max );
+		this.element_content_word_separator_comma						= this.newElement( 'span',		{ 'class': 'web-koch-trainer-content-settings-line' },									this.element_content_word );
+		this.element_content_word_separator_comma_checkbox				= this.newElement( 'input',		{ 'class': 'web-koch-trainer-content-settings-line-checkbox', 'type': 'checkbox' },		this.element_content_word_separator_comma );
+		this.element_content_word_separator_comma_prompt				= this.newElement( 'span',		{ 'class': 'web-koch-trainer-content-settings-line-prompt-checkbox' },					this.element_content_word_separator_comma );
+		this.element_content_word_separator_period						= this.newElement( 'span',		{ 'class': 'web-koch-trainer-content-settings-line' },									this.element_content_word );
+		this.element_content_word_separator_period_checkbox				= this.newElement( 'input',		{ 'class': 'web-koch-trainer-content-settings-line-checkbox', 'type': 'checkbox' },		this.element_content_word_separator_period );
+		this.element_content_word_separator_period_prompt				= this.newElement( 'span',		{ 'class': 'web-koch-trainer-content-settings-line-prompt-checkbox' },					this.element_content_word_separator_period );
+		this.element_content_word_separator_question					= this.newElement( 'span',		{ 'class': 'web-koch-trainer-content-settings-line' },									this.element_content_word );
+		this.element_content_word_separator_question_checkbox			= this.newElement( 'input',		{ 'class': 'web-koch-trainer-content-settings-line-checkbox', 'type': 'checkbox' },		this.element_content_word_separator_question );
+		this.element_content_word_separator_question_prompt				= this.newElement( 'span',		{ 'class': 'web-koch-trainer-content-settings-line-prompt-checkbox' },					this.element_content_word_separator_question );
+		this.element_content_word_source								= this.newElement( 'span',		{ 'class': 'web-koch-trainer-content-settings-line' },									this.element_content_word );
+		this.element_content_word_source_prompt							= this.newElement( 'span',		{ 'class': 'web-koch-trainer-content-settings-line-prompt' },							this.element_content_word_source );
+		this.element_content_word_source_select							= this.newElement( 'select',	{ 'class': 'web-koch-trainer-content-settings-line-select' },							this.element_content_word_source );
+		this.element_content_word_custom_characters						= this.newElement( 'span',		{ 'class': 'web-koch-trainer-content-settings-line custom' },							this.element_content_word );
+		this.element_content_word_custom_characters_prompt				= this.newElement( 'span',		{ 'class': 'web-koch-trainer-content-settings-line-prompt' },							this.element_content_word_custom_characters );
+		this.element_content_word_custom_word_list_textarea				= this.newElement( 'textarea',	{ 'class': 'web-koch-trainer-content-settings-line-textarea' },							this.element_content_word_custom_characters );
 
 		this.element_content_word_count_prompt.textContent				= 'Word Count';
 		this.element_content_word_char_min_prompt.textContent			= 'Word Min Length';
@@ -222,13 +230,20 @@ class WebKochTrainer extends HTMLElement
 		this.element_content_word_separator_comma_prompt.textContent	= 'Include Comma';
 		this.element_content_word_separator_period_prompt.textContent	= 'Include Period';
 		this.element_content_word_separator_question_prompt.textContent	= 'Include Question Mark';
+		this.element_content_word_source_prompt.textContent				= 'Word List Source';
+		this.element_content_word_custom_characters_prompt.textContent	= 'Custom Word List';
 
-		this.element_content_word_count_input.addEventListener( 'change', function( event ) { if ( self.word_count !== self.element_content_word_count_input.value ) self.word_count = self.element_content_word_count_input.value; },		false );
-		this.element_content_word_char_min_input.addEventListener( 'change', function( event ) { if ( self.word_char_min !== self.element_content_word_char_min_input.value ) self.word_char_min = self.element_content_word_char_min_input.value; },		false );
-		this.element_content_word_char_max_input.addEventListener( 'change', function( event ) { if ( self.word_char_max !== self.element_content_word_char_max_input.value ) self.word_char_max = self.element_content_word_char_max_input.value; },		false );
-		this.element_content_word_separator_comma_checkbox.addEventListener( 'click', function( event ) { if ( self.word_comma !== self.element_content_word_separator_comma_checkbox.checked ) self.word_comma = self.element_content_word_separator_comma_checkbox.checked; },		false );
-		this.element_content_word_separator_period_checkbox.addEventListener( 'click', function( event ) { if ( self.word_period !== self.element_content_word_separator_period_checkbox.checked ) self.word_period = self.element_content_word_separator_period_checkbox.checked; },		false );
-		this.element_content_word_separator_question_checkbox.addEventListener( 'click', function( event ) { if ( self.word_question !== self.element_content_word_separator_question_checkbox.checked ) self.word_question = self.element_content_word_separator_question_checkbox.checked; },		false );
+		this.element_content_word_source_select.add( new Option( 'Default',				'default' ) );
+		this.element_content_word_source_select.add( new Option( 'Custom Word List',	'custom' ) );
+
+		this.element_content_word_count_input.addEventListener(					'change',	function( event ) { if ( self.word_count !== self.element_content_word_count_input.value ) self.word_count = self.element_content_word_count_input.value; },		false );
+		this.element_content_word_char_min_input.addEventListener(				'change',	function( event ) { if ( self.word_char_min !== self.element_content_word_char_min_input.value ) self.word_char_min = self.element_content_word_char_min_input.value; },		false );
+		this.element_content_word_char_max_input.addEventListener(				'change',	function( event ) { if ( self.word_char_max !== self.element_content_word_char_max_input.value ) self.word_char_max = self.element_content_word_char_max_input.value; },		false );
+		this.element_content_word_separator_comma_checkbox.addEventListener(	'click',	function( event ) { if ( self.word_comma !== self.element_content_word_separator_comma_checkbox.checked ) self.word_comma = self.element_content_word_separator_comma_checkbox.checked; },		false );
+		this.element_content_word_separator_period_checkbox.addEventListener(	'click',	function( event ) { if ( self.word_period !== self.element_content_word_separator_period_checkbox.checked ) self.word_period = self.element_content_word_separator_period_checkbox.checked; },		false );
+		this.element_content_word_separator_question_checkbox.addEventListener(	'click',	function( event ) { if ( self.word_question !== self.element_content_word_separator_question_checkbox.checked ) self.word_question = self.element_content_word_separator_question_checkbox.checked; },		false );
+		this.element_content_word_source_select.addEventListener(				'change',	function( event ) { if ( self.word_source !== self.element_content_word_source_select.value ) self.word_source = self.element_content_word_source_select.value; },		false );
+		this.element_content_word_custom_word_list_textarea.addEventListener(	'change',	function( event ) { if ( self.word_custom_word_list !== self.element_content_word_custom_word_list_textarea.value ) self.word_custom_word_list = self.element_content_word_custom_word_list_textarea.value; },		false );
 	}
 
 	initialize_ui_actionbar()
@@ -296,6 +311,138 @@ class WebKochTrainer extends HTMLElement
 		classNameAddIfMissing( this.element_content_settings, mode );
 	}
 
+	start()
+	{
+		const self = this;
+
+		this._running										= true;
+		this.element_actionbar_button.textContent			= 'Stop';
+
+		this.element_actionbar_hertz_input.disabled			= true;
+		this.element_actionbar_eff_speed_input.disabled		= true;
+		this.element_actionbar_char_speed_input.disabled	= true;
+
+		classNameAddIfMissing( this.element_content_running, 'visible' );
+
+		this._context						= new AudioContext();
+		this._oscillator					= this._context.createOscillator();
+		this._oscillator.type				= "sine";
+		this._oscillator.frequency.value	= this.hertz;
+		this._oscillator.onended			= function() { self.stop(); };
+		this._gain							= this._context.createGain();
+		this._gain.gain.value				= 0;
+
+		this._oscillator.connect( this._gain );
+		this._gain.connect( this._context.destination );
+		this._oscillator.start( 0 );
+
+		if ( this.mode === 'random' )			this.start_random();
+		else if ( this.mode === 'callsign' )	this.start_callsign();
+		else if ( this.mode === 'word' )		this.start_word();
+		else
+			return this.stop();
+
+		this.element_content_running.textContent = 'Starting in 3...';
+
+		setTimeout( function() { self.element_content_running.textContent = 'Starting in 3... 2...'; },			1000 );
+		setTimeout( function() { self.element_content_running.textContent = 'Starting in 3... 2... 1...'; },	2000 );
+		setTimeout( function() { self.element_content_running.textContent = 'Running...'; },					3000 );
+	}
+
+	start_random()
+	{
+		let i, next_space, character_list;
+
+		character_list	= new Array();
+		next_space		= window.get_random( 0, 7 );
+
+		for ( i = 0; i < this.random_character_count; i++ )
+		{
+			character_list.push( this._random_characters[ window.get_random( 0, this._random_characters.length - 1 ) ] );
+
+			if ( i < ( this.random_character_count - 1 ) && i === next_space )
+			{
+				character_list.push( ' ' );
+				next_space	= i + window.get_random( 1, 8 );
+			}
+		}
+
+		this.generate_morse( character_list.join( '' ), this._context.currentTime + 3 );
+	}
+
+	start_callsign()
+	{
+		let i, callsigns, final_callsigns;
+
+		callsigns		= window.get_callsigns();
+		final_callsigns	= new Array();
+
+		for ( i = 0; i < this.callsign_count; i++ )
+		{
+			final_callsigns.push( callsigns[ window.get_random( 0, callsigns.length - 1 ) ] );
+		}
+
+		this.generate_morse( final_callsigns.join( ' ' ), this._context.currentTime + 3 );
+	}
+
+	start_word()
+	{
+		const self = this;
+		let i, words, separators, final_words;
+
+		if ( this.word_source === 'custom' )	words = this.word_custom_word_list.split( new RegExp( '\\s', '' ) );
+		else									words = window.get_words();
+
+		words		= words.filter( word => word.length >= self.word_char_min && word.length <= self.word_char_max );
+		separators	= new Array();
+		final_words	= new Array();
+
+		separators.push( ' ' );
+
+		if ( this.word_comma )		separators.push( ',' );
+		if ( this.word_period )		separators.push( '.' );
+		if ( this.word_question )	separators.push( '?' );
+
+		for ( i = 0; i < this.word_count; i++ )
+		{
+			final_words.push( words[ window.get_random( 0, words.length - 1 ) ] );
+
+			if ( i < this.word_count - 1 )
+			{
+				final_words.push( separators[ window.get_random( 0, separators.length - 1 ) ] );
+			}
+		}
+
+		this.generate_morse( final_words.join( ' ' ), this._context.currentTime + 3 );
+	}
+
+	stop()
+	{
+		const self = this;
+
+		this._gain.gain.cancelScheduledValues( this._context.currentTime );
+		this._gain.gain.setTargetAtTime( 0.0, this._context.currentTime, 0.005 );
+		setTimeout( function() { self.stop_lowLevel(); }, 100 );
+	}
+
+	stop_lowLevel()
+	{
+		this._running										= false;
+		this.element_actionbar_button.textContent			= 'Run';
+
+		this.element_actionbar_hertz_input.disabled			= false;
+		this.element_actionbar_eff_speed_input.disabled		= false;
+		this.element_actionbar_char_speed_input.disabled	= false;
+
+		this._context.close();
+
+		delete this._context;
+		delete this._oscillator;
+		delete this._gain;
+
+		classNameRemoveIfPresent( this.element_content_running, 'visible' );
+	}
+
 	event_button_mousedown( e )
 	{
 		document.addEventListener(	'mouseup',	this._event_button_mouseup, false );
@@ -317,7 +464,8 @@ class WebKochTrainer extends HTMLElement
 			return true;
 		}
 
-		this.generate_morse( 'Ryan', this._context.currentTime ); // TODO: Should disable button while running. Or enable "Cancel"
+		if ( this._running )	this.stop();
+		else					this.start();
 
 		this.eventStopPropagation( e );
 		return this.eventPreventDefault( e );
@@ -392,7 +540,6 @@ class WebKochTrainer extends HTMLElement
 		this._word_count		= 20;
 		this._word_char_min		= 1;
 		this._word_char_max		= 5;
-		this._word_file			= null;
 		this._word_separators	= [ ' ' ];
 
 		this._morse_text		= '';
@@ -420,13 +567,14 @@ class WebKochTrainer extends HTMLElement
 		// Word Mode
 		//
 
-		if ( !this.hasAttribute( 'word-count' ) )				this.word_count					= this.storage_value_or_default( 'word-count',		20 );
-		if ( !this.hasAttribute( 'word-char-min' ) )			this.word_char_min				= this.storage_value_or_default( 'word-char-min',	2 );
-		if ( !this.hasAttribute( 'word-char-max' ) )			this.word_char_max				= this.storage_value_or_default( 'word-char-max',	5 );
-		if ( !this.hasAttribute( 'word-comma' ) )				this.word_comma					= this.storage_value_or_default( 'word-comma',		false );
-		if ( !this.hasAttribute( 'word-period' ) )				this.word_period				= this.storage_value_or_default( 'word-period',		false );
-		if ( !this.hasAttribute( 'word-question' ) )			this.word_question				= this.storage_value_or_default( 'word-question',	false );
-		if ( !this.hasAttribute( 'word-file' ) )				this.word_file					= this.storage_value_or_default( 'word-file',		'' ); // TODO: Maybe this should be a "textarea" to paste content into?
+		if ( !this.hasAttribute( 'word-count' ) )				this.word_count					= this.storage_value_or_default( 'word-count',					20 );
+		if ( !this.hasAttribute( 'word-char-min' ) )			this.word_char_min				= this.storage_value_or_default( 'word-char-min',				2 );
+		if ( !this.hasAttribute( 'word-char-max' ) )			this.word_char_max				= this.storage_value_or_default( 'word-char-max',				5 );
+		if ( !this.hasAttribute( 'word-comma' ) )				this.word_comma					= this.storage_value_or_default( 'word-comma',					false );
+		if ( !this.hasAttribute( 'word-period' ) )				this.word_period				= this.storage_value_or_default( 'word-period',					false );
+		if ( !this.hasAttribute( 'word-question' ) )			this.word_question				= this.storage_value_or_default( 'word-question',				false );
+		if ( !this.hasAttribute( 'word-source' ) )				this.word_source				= this.storage_value_or_default( 'word-source',					'default' );
+		if ( !this.hasAttribute( 'word-custom-word-list' ) )	this.word_custom_word_list		= this.storage_value_or_default( 'word-custom-word-list',		'' );
 
 		//
 		// Callsign Mode
@@ -470,7 +618,7 @@ class WebKochTrainer extends HTMLElement
 	get random_character_count()			{ return this.getAttribute( 'random-character-count' ); }
 	set random_character_count( value )		{ this.setAttribute( 'random-character-count', value ); }
 
-	get character_speed()					{ return this.getAttribute( 'hertz' ); }
+	get character_speed()					{ return this.getAttribute( 'character-speed' ); }
 	set character_speed( value )			{ this.setAttribute( 'character-speed', value ); }
 
 	get effective_speed()					{ return this.getAttribute( 'effective-speed' ); }
@@ -488,9 +636,6 @@ class WebKochTrainer extends HTMLElement
 	get callsign_count()			{ return this.getAttribute( 'callsign-count' ); }
 	set callsign_count( value )		{ this.setAttribute( 'callsign-count', value ); }
 
-	get word_mode()					{ return this.getAttribute( 'word-mode' ); }
-	set word_mode( value )			{ this.setAttribute( 'word-mode', value ); }
-
 	get word_count()				{ return this.getAttribute( 'word-count' ); }
 	set word_count( value )			{ this.setAttribute( 'word-count', value ); }
 
@@ -499,9 +644,6 @@ class WebKochTrainer extends HTMLElement
 
 	get word_char_max()				{ return this.getAttribute( 'word-char-max' ); }
 	set word_char_max( value )		{ this.setAttribute( 'word-char-max', value ); }
-
-	get word_file()					{ return this.getAttribute( 'word-file' ); }
-	set word_file( value )			{ this.setAttribute( 'word-file', value ); }
 
 	get word_comma()				{ return this.getAttribute( 'word-comma' ); }
 	set word_comma( value )			{ this.setAttribute( 'word-comma', value ); }
@@ -512,13 +654,19 @@ class WebKochTrainer extends HTMLElement
 	get word_question()				{ return this.getAttribute( 'word-question' ); }
 	set word_question( value )		{ this.setAttribute( 'word-question', value ); }
 
+	get word_source()				{ return this.getAttribute( 'word-source' ); }
+	set word_source( value )		{ this.setAttribute( 'word-source', value ); }
+
+	get word_custom_word_list()				{ return this.getAttribute( 'word-custom-word-list' ); }
+	set word_custom_word_list( value )		{ this.setAttribute( 'word-custom-word-list', value ); }
+
 	//
 	// Attributes
 	//
 
 	static get observedAttributes()
 	{
-		return [ 'mode', 'character-speed', 'effective-speed', 'hertz', 'random-source', 'random-level', 'random-character-count', 'random-custom-characters', 'callsign-mode', 'callsign-count', 'word-mode', 'word-count', 'word-char-min', 'word-char-max', 'word-file', 'word-comma', 'word-period', 'word-question' ];
+		return [ 'mode', 'character-speed', 'effective-speed', 'hertz', 'random-source', 'random-level', 'random-character-count', 'random-custom-characters', 'callsign-mode', 'callsign-count', 'word-count', 'word-char-min', 'word-char-max', 'word-comma', 'word-period', 'word-question', 'word-source', 'word-custom-word-list' ];
 	}
 
 	attributeChangedCallback( name, oldValue, newValue )
@@ -532,29 +680,21 @@ class WebKochTrainer extends HTMLElement
 
 				break;
 			case 'character-speed':
-				this._dot										= 1.2 / newValue;
-				this._character_speed							= newValue;
 				this.element_actionbar_char_speed_input.value	= newValue;
-
 				this.update_timing();
 
 				break;
 			case 'effective-speed':
-
-				this._effective_speed							= Math.max( this.character_speed, newValue )
 				this.element_actionbar_eff_speed_input.value	= newValue;
-
 				this.update_timing();
 
 				break;
 			case 'hertz':
 				this._hertz										= newValue;
-				this._oscillator.frequency.value				= newValue;
 				this.element_actionbar_hertz_input.value		= newValue;
 
 				break;
 			case 'random-source':
-				this._random_source								= newValue;
 				this.element_content_random_source_select.value	= newValue;
 
 				classNameRemoveIfPresent( this.element_content_random, 'level' );
@@ -563,13 +703,11 @@ class WebKochTrainer extends HTMLElement
 
 				break;
 			case 'random-level':
-				this._random_level								= newValue;
 				this._random_characters							= this._character_sequence.slice( 0, parseInt( newValue ) );
 				this.element_content_random_level_select.value	= newValue;
 
 				break;
 			case 'random-character-count':
-				this._random_character_count							= newValue;
 				this.element_content_random_character_count_input.value	= newValue;
 
 				break;
@@ -582,11 +720,8 @@ class WebKochTrainer extends HTMLElement
 			case 'callsign-mode':
 				break;
 			case 'callsign-count':
-				this._callsign_count							= newValue;
 				this.element_content_callsign_count_input.value	= newValue;
 
-				break;
-			case 'word-mode':
 				break;
 			case 'word-count':
 				this.element_content_word_count_input.value = newValue;
@@ -597,8 +732,6 @@ class WebKochTrainer extends HTMLElement
 			case 'word-char-max':
 				this.element_content_word_char_max_input.value = newValue;
 				break;
-			case 'word-file':
-				break;
 			case 'word-comma':
 				this.element_content_word_separator_comma_checkbox.checked = newValue;
 				break;
@@ -607,6 +740,17 @@ class WebKochTrainer extends HTMLElement
 				break;
 			case 'word-question':
 				this.element_content_word_separator_question_checkbox.checked = newValue;
+				break;
+			case 'word-source':
+				this.element_content_word_source_select.value	= newValue;
+
+				if ( newValue === 'custom' )	classNameAddIfMissing( this.element_content_word, 'custom' );
+				else							classNameRemoveIfPresent( this.element_content_word, 'custom' );
+
+				break;
+			case 'word-custom-word-list':
+				this.element_content_word_custom_word_list_textarea.value = newValue;
+
 				break;
 		}
 	}
@@ -622,12 +766,12 @@ class WebKochTrainer extends HTMLElement
 		{
 			if ( c === ' ' )
 			{
-				time += 3 * this._dot;
+				time += this._inter_word;
 			}
 			else if ( this._letters[ c ] !== undefined )
 			{
 				time = this.createSound( time, this._letters[ c ] );
-				time += 2 * this._dot;
+				time += this._inter_letter;
 			}
 
 			char		= new MorseCharacter();
@@ -637,28 +781,36 @@ class WebKochTrainer extends HTMLElement
 			this.morse_display.push( char );
 		}
 
+		this._oscillator.stop( time );
+		this.element_content_view_content.textContent = text;
+
 		return time;
 	}
 
 	createSound( time, char )
 	{
-		for ( let c of char )
+		let i, i_len;
+
+		for ( i = 0, i_len = char.length; i < i_len; i++ )
 		{
-			switch ( c )
+			switch ( char[ i ] )
 			{
 				case '.':
 					this._gain.gain.setTargetAtTime( 1.0, time, 0.005 );
-					time += this._dot;
+					time += this._dit;
 					this._gain.gain.setTargetAtTime( 0.0, time, 0.005 );
 					break;
 				case '-':
 					this._gain.gain.setTargetAtTime( 1.0, time, 0.005 );
-					time += 3 * this._dot;
+					time += this._dah;
 					this._gain.gain.setTargetAtTime( 0.0, time, 0.005 );
 					break;
 			}
 
-			time += this._dot;
+			if ( i < i_len )
+			{
+				time += this._inter_symbol;
+			}
 		}
 
 		return time;
