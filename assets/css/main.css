@@ -152,15 +152,29 @@
 }
 
 .web-koch-trainer-content-settings-line.level,
+.web-koch-trainer-content-settings-line.characters,
 .web-koch-trainer-content-settings-line.custom
 {
 	display: none;
 }
 
 .web-koch-trainer-content-settings.custom .web-koch-trainer-content-settings-line.custom,
-.web-koch-trainer-content-settings.level .web-koch-trainer-content-settings-line.level
+.web-koch-trainer-content-settings.level .web-koch-trainer-content-settings-line.level,
+.web-koch-trainer-content-settings.level .web-koch-trainer-content-settings-line.characters
 {
 	display: block;
+}
+
+.web-koch-trainer-content-settings-line.characters textarea
+{
+	min-height: 40px;
+	resize: none;
+}
+
+.web-koch-trainer-content-settings-line.custom textarea
+{
+	min-height: 40px;
+	resize: vertical;
 }
 
 .web-koch-trainer-content-settings > .web-koch-trainer-content-settings-line + .web-koch-trainer-content-settings-line

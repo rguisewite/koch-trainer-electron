@@ -147,24 +147,30 @@ class WebKochTrainer extends HTMLElement
 		const self = this;
 		let i, i_len;
 
-		this.element_content_random								= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings random' },							this.element_content_settings );
-		this.element_content_random_source						= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line' },								this.element_content_random );
-		this.element_content_random_source_prompt				= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line-prompt' },						this.element_content_random_source );
-		this.element_content_random_source_select				= this.newElement( 'select',{ 'class': 'web-koch-trainer-content-settings-line-select' },						this.element_content_random_source );
-		this.element_content_random_level						= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line level' },						this.element_content_random );
-		this.element_content_random_level_prompt				= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line-prompt' },						this.element_content_random_level );
-		this.element_content_random_level_select				= this.newElement( 'select',{ 'class': 'web-koch-trainer-content-settings-line-select' },						this.element_content_random_level );
-		this.element_content_random_custom_characters			= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line custom' },						this.element_content_random );
-		this.element_content_random_custom_characters_prompt	= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line-prompt' },						this.element_content_random_custom_characters );
-		this.element_content_random_custom_characters_input		= this.newElement( 'input',	{ 'class': 'web-koch-trainer-content-settings-line-input', 'type': 'text' },		this.element_content_random_custom_characters );
-		this.element_content_random_character_count				= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line' },								this.element_content_random );
-		this.element_content_random_character_count_prompt		= this.newElement( 'span',	{ 'class': 'web-koch-trainer-content-settings-line-prompt' },						this.element_content_random_character_count );
-		this.element_content_random_character_count_input		= this.newElement( 'input',	{ 'class': 'web-koch-trainer-content-settings-line-input', 'type': 'text' },		this.element_content_random_character_count );
+		this.element_content_random								= this.newElement( 'span',		{ 'class': 'web-koch-trainer-content-settings random' },							this.element_content_settings );
+		this.element_content_random_source						= this.newElement( 'span',		{ 'class': 'web-koch-trainer-content-settings-line' },								this.element_content_random );
+		this.element_content_random_source_prompt				= this.newElement( 'span',		{ 'class': 'web-koch-trainer-content-settings-line-prompt' },						this.element_content_random_source );
+		this.element_content_random_source_select				= this.newElement( 'select',	{ 'class': 'web-koch-trainer-content-settings-line-select' },						this.element_content_random_source );
+		this.element_content_random_level						= this.newElement( 'span',		{ 'class': 'web-koch-trainer-content-settings-line level' },						this.element_content_random );
+		this.element_content_random_level_prompt				= this.newElement( 'span',		{ 'class': 'web-koch-trainer-content-settings-line-prompt' },						this.element_content_random_level );
+		this.element_content_random_level_select				= this.newElement( 'select',	{ 'class': 'web-koch-trainer-content-settings-line-select' },						this.element_content_random_level );
+		this.element_content_random_level_characters			= this.newElement( 'span',		{ 'class': 'web-koch-trainer-content-settings-line characters' },					this.element_content_random );
+		this.element_content_random_level_characters_prompt		= this.newElement( 'span',		{ 'class': 'web-koch-trainer-content-settings-line-prompt' },						this.element_content_random_level_characters );
+		this.element_content_random_level_characters_input		= this.newElement( 'textarea',	{ 'class': 'web-koch-trainer-content-settings-line-input', },						this.element_content_random_level_characters );
+		this.element_content_random_custom_characters			= this.newElement( 'span',		{ 'class': 'web-koch-trainer-content-settings-line custom' },						this.element_content_random );
+		this.element_content_random_custom_characters_prompt	= this.newElement( 'span',		{ 'class': 'web-koch-trainer-content-settings-line-prompt' },						this.element_content_random_custom_characters );
+		this.element_content_random_custom_characters_input		= this.newElement( 'textarea',	{ 'class': 'web-koch-trainer-content-settings-line-input', },						this.element_content_random_custom_characters );
+		this.element_content_random_character_count				= this.newElement( 'span',		{ 'class': 'web-koch-trainer-content-settings-line' },								this.element_content_random );
+		this.element_content_random_character_count_prompt		= this.newElement( 'span',		{ 'class': 'web-koch-trainer-content-settings-line-prompt' },						this.element_content_random_character_count );
+		this.element_content_random_character_count_input		= this.newElement( 'input',		{ 'class': 'web-koch-trainer-content-settings-line-input', 'type': 'text' },		this.element_content_random_character_count );
 
 		this.element_content_random_source_prompt.textContent				= 'Source';
 		this.element_content_random_character_count_prompt.textContent		= 'Character Count';
 		this.element_content_random_level_prompt.textContent				= 'Level';
+		this.element_content_random_level_characters_prompt.textContent		= 'Level Characters';
 		this.element_content_random_custom_characters_prompt.textContent	= 'Custom Characters';
+
+		this.element_content_random_level_characters_input.disabled			= true;
 
 		this.element_content_random_source_select.add( new Option( 'Level',				'level' ) );
 		this.element_content_random_source_select.add( new Option( 'Custom Characters',	'custom' ) );
@@ -174,10 +180,10 @@ class WebKochTrainer extends HTMLElement
 			this.element_content_random_level_select.add( new Option( i + 1, i + 1 ) );
 		}
 
-		this.element_content_random_source_select.addEventListener(				'change',	function( event ) { if ( self.random_source !== self.element_content_random_source_select.value ) self.random_source = self.element_content_random_source_select.value; },		false );
-		this.element_content_random_level_select.addEventListener(				'change',	function( event ) { if ( self.random_level !== self.element_content_random_level_select.value ) self.random_level = self.element_content_random_level_select.value; },		false );
-		this.element_content_random_custom_characters_input.addEventListener(	'change',	function( event ) { if ( self.random_custom_characters !== self.element_content_random_custom_characters_input.value ) self.random_custom_characters = self.element_content_random_custom_characters_input.value; },		false );
-		this.element_content_random_character_count_input.addEventListener(		'change',	function( event ) { if ( self.random_character_count !== self.element_content_random_character_count_input.value ) self.random_character_count = self.element_content_random_character_count_input.value; },		false );
+		this.element_content_random_source_select.addEventListener(				'change',	function( event ) { if ( self.random_source !== self.element_content_random_source_select.value ) self.random_source = self.element_content_random_source_select.value; },												false );
+		this.element_content_random_level_select.addEventListener(				'change',	function( event ) { if ( self.random_level !== self.element_content_random_level_select.value ) self.random_level = self.element_content_random_level_select.value; },													false );
+		this.element_content_random_custom_characters_input.addEventListener(	'change',	function( event ) { if ( self.random_custom_characters !== self.element_content_random_custom_characters_input.value ) self.random_custom_characters = self.element_content_random_custom_characters_input.value; },	false );
+		this.element_content_random_character_count_input.addEventListener(		'input',	function( event ) { if ( self.random_character_count !== self.element_content_random_character_count_input.value ) self.random_character_count = self.element_content_random_character_count_input.value; },			false );
 	}
 
 	initialize_ui_content_callsign()
@@ -191,7 +197,7 @@ class WebKochTrainer extends HTMLElement
 
 		this.element_content_callsign_count_prompt.textContent	= 'Callsign Count';
 
-		this.element_content_callsign_count_input.addEventListener( 'change', function( event ) { if ( self.callsign_count !== self.element_content_callsign_count_input.value ) self.callsign_count = self.element_content_callsign_count_input.value; },		false );
+		this.element_content_callsign_count_input.addEventListener( 'change', function( event ) { if ( self.callsign_count !== self.element_content_callsign_count_input.value ) self.callsign_count = self.element_content_callsign_count_input.value; }, false );
 	}
 
 	initialize_ui_content_word()
@@ -236,14 +242,14 @@ class WebKochTrainer extends HTMLElement
 		this.element_content_word_source_select.add( new Option( 'Default',				'default' ) );
 		this.element_content_word_source_select.add( new Option( 'Custom Word List',	'custom' ) );
 
-		this.element_content_word_count_input.addEventListener(					'change',	function( event ) { if ( self.word_count !== self.element_content_word_count_input.value ) self.word_count = self.element_content_word_count_input.value; },		false );
-		this.element_content_word_char_min_input.addEventListener(				'change',	function( event ) { if ( self.word_char_min !== self.element_content_word_char_min_input.value ) self.word_char_min = self.element_content_word_char_min_input.value; },		false );
-		this.element_content_word_char_max_input.addEventListener(				'change',	function( event ) { if ( self.word_char_max !== self.element_content_word_char_max_input.value ) self.word_char_max = self.element_content_word_char_max_input.value; },		false );
-		this.element_content_word_separator_comma_checkbox.addEventListener(	'click',	function( event ) { if ( self.word_comma !== self.element_content_word_separator_comma_checkbox.checked ) self.word_comma = self.element_content_word_separator_comma_checkbox.checked; },		false );
-		this.element_content_word_separator_period_checkbox.addEventListener(	'click',	function( event ) { if ( self.word_period !== self.element_content_word_separator_period_checkbox.checked ) self.word_period = self.element_content_word_separator_period_checkbox.checked; },		false );
-		this.element_content_word_separator_question_checkbox.addEventListener(	'click',	function( event ) { if ( self.word_question !== self.element_content_word_separator_question_checkbox.checked ) self.word_question = self.element_content_word_separator_question_checkbox.checked; },		false );
-		this.element_content_word_source_select.addEventListener(				'change',	function( event ) { if ( self.word_source !== self.element_content_word_source_select.value ) self.word_source = self.element_content_word_source_select.value; },		false );
-		this.element_content_word_custom_word_list_textarea.addEventListener(	'change',	function( event ) { if ( self.word_custom_word_list !== self.element_content_word_custom_word_list_textarea.value ) self.word_custom_word_list = self.element_content_word_custom_word_list_textarea.value; },		false );
+		this.element_content_word_count_input.addEventListener(					'input',	function( event ) { if ( self.word_count !== self.element_content_word_count_input.value ) self.word_count = self.element_content_word_count_input.value; },													false );
+		this.element_content_word_char_min_input.addEventListener(				'input',	function( event ) { if ( self.word_char_min !== self.element_content_word_char_min_input.value ) self.word_char_min = self.element_content_word_char_min_input.value; },										false );
+		this.element_content_word_char_max_input.addEventListener(				'input',	function( event ) { if ( self.word_char_max !== self.element_content_word_char_max_input.value ) self.word_char_max = self.element_content_word_char_max_input.value; },										false );
+		this.element_content_word_separator_comma_checkbox.addEventListener(	'click',	function( event ) { if ( self.word_comma !== self.element_content_word_separator_comma_checkbox.checked ) self.word_comma = self.element_content_word_separator_comma_checkbox.checked; },						false );
+		this.element_content_word_separator_period_checkbox.addEventListener(	'click',	function( event ) { if ( self.word_period !== self.element_content_word_separator_period_checkbox.checked ) self.word_period = self.element_content_word_separator_period_checkbox.checked; },					false );
+		this.element_content_word_separator_question_checkbox.addEventListener(	'click',	function( event ) { if ( self.word_question !== self.element_content_word_separator_question_checkbox.checked ) self.word_question = self.element_content_word_separator_question_checkbox.checked; },			false );
+		this.element_content_word_source_select.addEventListener(				'change',	function( event ) { if ( self.word_source !== self.element_content_word_source_select.value ) self.word_source = self.element_content_word_source_select.value; },												false );
+		this.element_content_word_custom_word_list_textarea.addEventListener(	'input',	function( event ) { if ( self.word_custom_word_list !== self.element_content_word_custom_word_list_textarea.value ) self.word_custom_word_list = self.element_content_word_custom_word_list_textarea.value; },	false );
 	}
 
 	initialize_ui_actionbar()
@@ -278,7 +284,7 @@ class WebKochTrainer extends HTMLElement
 
 		this.element_actionbar_button.addEventListener( 'mousedown', this._event_button_mousedown, false );
 
-		this.element_actionbar_char_speed_input.addEventListener( 'change', function( event )
+		this.element_actionbar_char_speed_input.addEventListener( 'input', function( event )
 		{
 			if ( self.character_speed !== parseInt( self.element_actionbar_char_speed_input.value ) )
 			{
@@ -286,7 +292,7 @@ class WebKochTrainer extends HTMLElement
 			}
 		}, false );
 
-		this.element_actionbar_eff_speed_input.addEventListener( 'change', function( event )
+		this.element_actionbar_eff_speed_input.addEventListener( 'input', function( event )
 		{
 			if ( self.effective_speed !== parseInt( self.element_actionbar_eff_speed_input.value ) )
 			{
@@ -294,7 +300,7 @@ class WebKochTrainer extends HTMLElement
 			}
 		}, false );
 
-		this.element_actionbar_hertz_input.addEventListener( 'change', function( event )
+		this.element_actionbar_hertz_input.addEventListener( 'input', function( event )
 		{
 			if ( self.hertz !== parseInt( self.element_actionbar_hertz_input.value ) )
 			{
@@ -549,10 +555,10 @@ class WebKochTrainer extends HTMLElement
 		// Generic
 		//
 
-		if ( !this.hasAttribute( 'mode' ) )						this.mode						= this.storage_value_or_default( 'mode',			'random' );
-		if ( !this.hasAttribute( 'character-speed' ) )			this.character_speed			= this.storage_value_or_default( 'character-speed',	20 );
-		if ( !this.hasAttribute( 'effective-speed' ) )			this.effective_speed			= this.storage_value_or_default( 'effective-speed',	20 );
-		if ( !this.hasAttribute( 'hertz' ) )					this.hertz						= this.storage_value_or_default( 'hertz',			550 );
+		if ( !this.hasAttribute( 'mode' ) )						this.mode						= this.storage_value_or_default( 'mode',						'random' );
+		if ( !this.hasAttribute( 'character-speed' ) )			this.character_speed			= this.storage_value_or_default( 'character-speed',				20 );
+		if ( !this.hasAttribute( 'effective-speed' ) )			this.effective_speed			= this.storage_value_or_default( 'effective-speed',				20 );
+		if ( !this.hasAttribute( 'hertz' ) )					this.hertz						= this.storage_value_or_default( 'hertz',						550 );
 
 		//
 		// Random Mode
@@ -580,7 +586,7 @@ class WebKochTrainer extends HTMLElement
 		// Callsign Mode
 		//
 
-		if ( !this.hasAttribute( 'callsign-count' ) )			this.callsign_count				= this.storage_value_or_default( 'callsign-count',	20 );
+		if ( !this.hasAttribute( 'callsign-count' ) )			this.callsign_count				= this.storage_value_or_default( 'callsign-count',				20 );
 	}
 
 	storage_value_or_default( key, default_value )
@@ -627,35 +633,35 @@ class WebKochTrainer extends HTMLElement
 	get random_custom_characters()			{ return this.getAttribute( 'random-custom-characters' ); }
 	set random_custom_characters( value )	{ this.setAttribute( 'random-custom-characters', value ); }
 
-	get hertz()						{ return this.getAttribute( 'hertz' ); }
-	set hertz( value )				{ this.setAttribute( 'hertz', value ); }
+	get hertz()								{ return this.getAttribute( 'hertz' ); }
+	set hertz( value )						{ this.setAttribute( 'hertz', value ); }
 
-	get callsign_mode()				{ return this.getAttribute( 'callsign-mode' ); }
-	set callsign_mode( value )		{ this.setAttribute( 'callsign-mode', value ); }
+	get callsign_mode()						{ return this.getAttribute( 'callsign-mode' ); }
+	set callsign_mode( value )				{ this.setAttribute( 'callsign-mode', value ); }
 
-	get callsign_count()			{ return this.getAttribute( 'callsign-count' ); }
-	set callsign_count( value )		{ this.setAttribute( 'callsign-count', value ); }
+	get callsign_count()					{ return this.getAttribute( 'callsign-count' ); }
+	set callsign_count( value )				{ this.setAttribute( 'callsign-count', value ); }
 
-	get word_count()				{ return this.getAttribute( 'word-count' ); }
-	set word_count( value )			{ this.setAttribute( 'word-count', value ); }
+	get word_count()						{ return this.getAttribute( 'word-count' ); }
+	set word_count( value )					{ this.setAttribute( 'word-count', value ); }
 
-	get word_char_min()				{ return this.getAttribute( 'word-char-min' ); }
-	set word_char_min( value )		{ this.setAttribute( 'word-char-min', value ); }
+	get word_char_min()						{ return this.getAttribute( 'word-char-min' ); }
+	set word_char_min( value )				{ this.setAttribute( 'word-char-min', value ); }
 
-	get word_char_max()				{ return this.getAttribute( 'word-char-max' ); }
-	set word_char_max( value )		{ this.setAttribute( 'word-char-max', value ); }
+	get word_char_max()						{ return this.getAttribute( 'word-char-max' ); }
+	set word_char_max( value )				{ this.setAttribute( 'word-char-max', value ); }
 
-	get word_comma()				{ return this.getAttribute( 'word-comma' ); }
-	set word_comma( value )			{ this.setAttribute( 'word-comma', value ); }
+	get word_comma()						{ return this.getAttribute( 'word-comma' ); }
+	set word_comma( value )					{ this.setAttribute( 'word-comma', value ); }
 
-	get word_period()				{ return this.getAttribute( 'word-period' ); }
-	set word_period( value )		{ this.setAttribute( 'word-period', value ); }
+	get word_period()						{ return this.getAttribute( 'word-period' ); }
+	set word_period( value )				{ this.setAttribute( 'word-period', value ); }
 
-	get word_question()				{ return this.getAttribute( 'word-question' ); }
-	set word_question( value )		{ this.setAttribute( 'word-question', value ); }
+	get word_question()						{ return this.getAttribute( 'word-question' ); }
+	set word_question( value )				{ this.setAttribute( 'word-question', value ); }
 
-	get word_source()				{ return this.getAttribute( 'word-source' ); }
-	set word_source( value )		{ this.setAttribute( 'word-source', value ); }
+	get word_source()						{ return this.getAttribute( 'word-source' ); }
+	set word_source( value )				{ this.setAttribute( 'word-source', value ); }
 
 	get word_custom_word_list()				{ return this.getAttribute( 'word-custom-word-list' ); }
 	set word_custom_word_list( value )		{ this.setAttribute( 'word-custom-word-list', value ); }
@@ -703,8 +709,11 @@ class WebKochTrainer extends HTMLElement
 
 				break;
 			case 'random-level':
-				this._random_characters							= this._character_sequence.slice( 0, parseInt( newValue ) );
-				this.element_content_random_level_select.value	= newValue;
+				this._random_characters											= this._character_sequence.slice( 0, parseInt( newValue ) );
+				this.element_content_random_level_select.value					= newValue;
+				this.element_content_random_level_characters_input.value		= this._random_characters.join( '·' );
+				this.element_content_random_level_characters_input.style.height	= '1px';
+				this.element_content_random_level_characters_input.style.height	= ( 16 + this.element_content_random_level_characters_input.scrollHeight ) + 'px';
 
 				break;
 			case 'random-character-count':
@@ -712,9 +721,11 @@ class WebKochTrainer extends HTMLElement
 
 				break;
 			case 'random-custom-characters':
-				this._random_custom_characters								= newValue;
-				this._random_characters										= newValue;
-				this.element_content_random_custom_characters_input.value	= newValue;
+				this._random_custom_characters										= newValue;
+				this._random_characters												= newValue;
+				this.element_content_random_custom_characters_input.value			= newValue;
+				this.element_content_random_custom_characters_input.style.height	= '1px';
+				this.element_content_random_custom_characters_input.style.height	= ( 16 + this.element_content_random_custom_characters_input.scrollHeight ) + 'px';
 
 				break;
 			case 'callsign-mode':
