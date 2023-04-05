@@ -8,10 +8,13 @@
     "start": "ELECTRON_DEVELOPMENT_MODE=1 electron .",
     "build-mac": "npm install && ./node_modules/.bin/electron-rebuild",
     "build-win": "npm install && .\\node_modules\\.bin\\electron-rebuild.cmd",
+    "build-linux": "npm install && ./node_modules/.bin/electron-rebuild",
     "pack-mac": "npm run build-mac && electron-builder --dir -m",
     "pack-win": "npm run build-win && electron-builder --dir -w --x64 --ia32",
+    "pack-linux": "npm run build-win && electron-builder --dir -l",
     "make-mac": "npm run build-mac && electron-builder -m",
     "make-win": "npm run build-win && electron-builder -w --x64 --ia32",
+    "make-linux": "npm run build-linux && electron-builder -l",
     "postinstall": "electron-builder install-app-deps"
   },
   "author": "Ryan Guisewite",
@@ -54,6 +57,9 @@
         "sha256"
       ]
     },
+	"linux": {
+	  "target": "AppImage"
+	},
     "nsis": {
       "installerIcon": "build/win/icon.ico",
       "uninstallerIcon": "build/win/icon.ico",
